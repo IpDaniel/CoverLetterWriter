@@ -17,5 +17,4 @@ class LetterWriter:
         return response.choices[0].message.content
 
     def create_prompt(self, job_description, resume):
-        return f"Please write a cover letter for the following job description and resume. 
-        Job Description: {job_description}\n\nResume: {resume}"
+        return f"Please write a cover letter for the following job description and resume. Job Description: \n{job_description}\n\nResume: {resume}"
