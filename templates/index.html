@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cover Letter Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cover Letter Generator</h1>
+    
+    <form id="letterForm">
+        <h2>Job Description</h2>
+        <textarea name="job_description" required placeholder="Paste the job description here..."></textarea>
+        
+        <h2>Your Resume</h2>
+        <textarea name="resume" required placeholder="Paste your resume here..."></textarea>
+        
+        <button type="submit" id="submitButton" disabled>Generate Cover Letter</button>
+    </form>
+
+    <div id="result" style="margin-top: 20px;">
+        <h2>Generated Cover Letter</h2>
+        <div class="loader" id="loadingSpinner"></div>
+        <div id="generatedLetter"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('letterForm');
+        const submitButton = document.getElementById('submitButton');
+        const jobDescription = form.elements['job_description'];
+        const resume = form.elements['resume'];
+
+        function validateForm() {
+            submitButton.disabled = !jobDescription.value.trim() || !resume.value.trim();
+        }
+
+        jobDescription.addEventListener('input', validateForm);
+        resume.addEventListener('input', validateForm);
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const spinner = document.getElementById('loadingSpinner');
+            const letterDiv = document.getElementById('generatedLetter');
+            
+            try {
+                spinner.style.display = 'block';
+                letterDiv.innerText = '';
+                
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                letterDiv.innerText = data.letter;
+            } catch (error) {
+                console.error('Error:', error);
+                letterDiv.innerText = 'An error occurred while generating the cover letter.';
+            } finally {
+                spinner.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
