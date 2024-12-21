@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from scripts.LettterWriter import LetterWriter
+from scripts.LetterWriter import LetterWriter
 
 app = Flask(__name__)
 
